@@ -5,6 +5,7 @@ import com.github.cpjinan.plugin.akarilevel.entity.MemberData
 import com.github.cpjinan.plugin.akarilevel.entity.MemberLevelData
 import com.github.cpjinan.plugin.akarilevel.event.MemberChangeEvent
 import com.github.cpjinan.plugin.akarilevel.level.LevelGroup.MemberChangeType
+import org.bukkit.Bukkit
 import org.bukkit.Bukkit.getOfflinePlayer
 import taboolib.common.platform.function.adaptPlayer
 import taboolib.common5.util.replace
@@ -15,7 +16,9 @@ import taboolib.module.kether.KetherShell
 import taboolib.module.kether.ScriptOptions
 import taboolib.platform.compat.replacePlaceholder
 import top.maplex.arim.Arim
+import top.maplex.arim.tools.commandhelper.variable
 import top.maplex.arim.tools.folderreader.releaseResourceFolderAndRead
+import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 
 /**
@@ -189,12 +192,15 @@ class ConfigLevelGroup(val config: ConfigurationSection) : LevelGroup {
         if (currentLevel >= getMaxLevel()) return
 
         var targetLevel = currentLevel
-
         if (config.getBoolean("Level.Auto-LevelUp", true) &&
             getLevelConfig(currentLevel).getBoolean("Auto-LevelUp", true)
         ) {
             while (currentExp >= getLevelExp(member, currentLevel, targetLevel + 1)) {
-                if (checkLevelCondition(member, targetLevel + 1)) targetLevel++ else break
+                if (checkLevelCondition(member, targetLevel + 1)) {
+                    targetLevel++
+                } else {
+                    break
+                }
             }
         } else {
             if (currentExp >= getLevelExp(member, currentLevel, targetLevel + 1) &&
@@ -215,9 +221,11 @@ class ConfigLevelGroup(val config: ConfigurationSection) : LevelGroup {
      * @param level 等级。
      */
     fun checkLevelCondition(member: String, level: Long): Boolean {
-        val offlinePlayer = getOfflinePlayer(member)
+        val offlinePlayer = getOfflinePlayer(UUID.fromString(member))
         if (!offlinePlayer.isOnline) return false
-        return getLevelConfig(level).getStringList("Condition.Kether").all {
+        var conditionList = getLevelConfig(level).getStringList("Condition.Kether")
+
+        return conditionList.all {
             KetherShell.eval(
                 it
                     .replace("{member}" to member, "{level}" to level, "{levelGroup}" to name)
