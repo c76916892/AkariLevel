@@ -1,0 +1,54 @@
+# 示例等级组
+Example:
+  # 常规设置
+  General:
+    # 展示名称
+    Display: "示例等级组"
+  # 来源设置
+  Source:
+    # 经验来源订阅
+    Subscribe:
+      "COMMAND_ADD_EXP": 1.0
+      "MYTHICMOBS_DROP_EXP": 1.0
+      "TEAM_SHARE_EXP": 1.0
+      "VANILLA_EXP_CHANGE": 0.0
+  # 等级设置
+  Level:
+    # 最低等级
+    Min: 0
+    # 最高等级
+    Max: 100
+    # 满足要求自动升级
+    Auto-LevelUp: true
+    # 达到最大等级后不再获取经验
+    Exp-Limit: true
+    # 关键等级设置
+    Key:
+      # 0 级 等级设置
+      0:
+        # 等级名称
+        Name: "§8Lv.§b0"
+        # 所需经验
+        Exp: "0"
+        # 升级条件
+        Condition: { }
+        # 升级动作
+        Action: { }
+      # 1 级 - 49 级 等级设置
+      1:
+        Name: "§8Lv.§b{level}"
+        Exp: "{level} * 50 + 100"
+        Action:
+          Kether:
+            - title "§e§lLevel UP!"
+            - subtitle "%AkariLevel_{levelGroup}_LastLevelName% §7→ %AkariLevel_{levelGroup}_LevelName%" by 10 25 10
+            - actionbar "§8[ §7%AkariLevel_{levelGroup}_Exp% §8/ §7%AkariLevel_{levelGroup}_NextLevelExp% §8]"
+      # 50 级 - 100 级 等级设置
+      50:
+        Name: "§8Lv.§b{level}"
+        Exp: "{level} * 100 + 100"
+        Action:
+          Kether:
+            - title "§e§lLevel UP!"
+            - subtitle "%AkariLevel_{levelGroup}_LastLevelName% §7→ %AkariLevel_{levelGroup}_LevelName%" by 10 25 10
+            - actionbar "§8[ §7%AkariLevel_{levelGroup}_Exp% §8/ §7%AkariLevel_{levelGroup}_NextLevelExp% §8]"
