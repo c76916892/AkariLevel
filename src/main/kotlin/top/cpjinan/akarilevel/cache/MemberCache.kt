@@ -74,9 +74,14 @@ object MemberCache {
     }
 
     fun flushDirtyMembers() {
+        var count = 0
         dirtyMembers.toList().forEach {
-            if (dirtyMembers.remove(it)) saveMember(it)
+            if (dirtyMembers.remove(it)) {
+                saveMember(it)
+                count++
+            }
         }
+        bukkitPlugin.logger.info("[自动保存] 本轮共成功保存 $count 位玩家数据")
     }
 
     private fun saveMember(member: String): Boolean {
